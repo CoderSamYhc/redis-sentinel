@@ -1,3 +1,5 @@
+# 介绍
+[相关文章](https://blog.samlog.club/archives/733/)
 # 使用
 1、在sentinel目录增加sentinel-1.conf、sentinel-2.conf配置文件
 
