@@ -1,3 +1,6 @@
+# 使用
+1、在sentinel目录增加sentinel-1.conf、sentinel-2.conf配置文件
+2、docker-compose up -d
 # 哨兵配置
 `#` 端口
 
