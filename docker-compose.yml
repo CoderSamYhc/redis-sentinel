@@ -1,0 +1,75 @@
+version: "3"
+services:
+  redis_master:
+    image: redis:6.0.7
+    container_name: "redis_master"
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./master/data/:/data/:rw
+      - ./master/conf/:/etc/redis/:rw
+      - ./master/log/:/log/:rw
+    command: redis-server /etc/redis/redis.conf
+    restart: always
+    environment:  # 配置环境变量
+      - TZ=Asia/Shanghai  # 设置时区
+  redis_slave1:
+    image: redis:6.0.7
+    container_name: "redis_slave1"
+    ports:
+      - "6381:6379"
+    volumes:
+      - ./slave1/data/:/data/:rw
+      - ./slave1/conf/:/etc/redis/:rw
+      - ./slave1/log/:/log/:rw
+    command: redis-server /etc/redis/redis.conf
+    restart: always
+    links:
+      - redis_master
+    environment:  # 配置环境变量
+      - TZ=Asia/Shanghai  # 设置时区
+  redis_slave2:
+    image: redis:6.0.7
+    container_name: "redis_slave2"
+    ports:
+      - "6382:6379"
+    volumes:
+      - ./slave2/data/:/data/:rw
+      - ./slave2/conf/:/etc/redis/:rw
+      - ./slave2/log/:/log/:rw
+    command: redis-server /etc/redis/redis.conf
+    restart: always
+    links:
+      - redis_master
+    environment:  # 配置环境变量
+      - TZ=Asia/Shanghai  # 设置时区
+  redis_sentinel1:
+    image: redis:6.0.7
+    container_name: "redis-sentinel-1"
+    ports:
+      - "6383:26379"
+    volumes:
+      - ./sentinel/sentinel-1.conf:/etc/redis/sentinel.conf:rw
+      - ./sentinel/log/sentinel-1/:/var/log/:rw
+    command: redis-sentinel /etc/redis/sentinel.conf
+    restart: always
+    links:
+      - redis_master
+      - redis_slave1
+    environment:  # 配置环境变量
+      - TZ=Asia/Shanghai  # 设置时区
+  redis_sentinel2:
+    image: redis:6.0.7
+    container_name: "redis-sentinel-2"
+    ports:
+      - "6384:26379"
+    volumes:
+      - ./sentinel/sentinel-2.conf:/etc/redis/sentinel.conf:rw
+      - ./sentinel/log/sentinel-2/:/var/log/:rw
+    command: redis-sentinel /etc/redis/sentinel.conf
+    restart: always
+    links:
+      - redis_master
+      - redis_slave2
+    environment:  # 配置环境变量
+      - TZ=Asia/Shanghai  # 设置时区
